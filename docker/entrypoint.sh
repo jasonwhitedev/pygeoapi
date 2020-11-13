@@ -92,13 +92,14 @@ case ${entry_cmd} in
 		# SCRIPT_NAME should not have value '/'
 		[[ "${SCRIPT_NAME}" = '/' ]] && export SCRIPT_NAME="" && echo "make SCRIPT_NAME empty from /"
 
-		echo "Start gunicorn name=${CONTAINER_NAME} on ${CONTAINER_HOST}:${CONTAINER_PORT} with ${WSGI_WORKERS} workers and SCRIPT_NAME=${SCRIPT_NAME}"
-		exec gunicorn --workers ${WSGI_WORKERS} \
-				--worker-class=${WSGI_WORKER_CLASS} \
-				--timeout ${WSGI_WORKER_TIMEOUT} \
-				--name=${CONTAINER_NAME} \
-				--bind ${CONTAINER_HOST}:${CONTAINER_PORT} \
-				pygeoapi.flask_app:APP
+		#echo "Start gunicorn name=${CONTAINER_NAME} on ${CONTAINER_HOST}:${CONTAINER_PORT} with ${WSGI_WORKERS} workers and SCRIPT_NAME=${SCRIPT_NAME}"
+		#exec gunicorn --workers ${WSGI_WORKERS} \
+		#		--worker-class=${WSGI_WORKER_CLASS} \
+		#		--timeout ${WSGI_WORKER_TIMEOUT} \
+		#		--name=${CONTAINER_NAME} \
+		#		--bind ${CONTAINER_HOST}:${CONTAINER_PORT} \
+		#		pygeoapi.flask_app:APP
+        #exec flask run -h 0.0.0.0 -p 5000
 	  ;;
 	*)
 	  error "unknown command arg: must be run (default) or test"

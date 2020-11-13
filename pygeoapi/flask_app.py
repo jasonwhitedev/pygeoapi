@@ -34,10 +34,12 @@ import os
 
 import click
 
-from flask import Flask, Blueprint, make_response, request, send_from_directory
+from flask import Flask, Blueprint, make_response, request, send_from_directory, json
 
 from pygeoapi.api import API
 from pygeoapi.util import get_mimetype, yaml_load
+
+from pygeoapi.config import config_settings
 
 
 CONFIG = None
@@ -47,6 +49,8 @@ if 'PYGEOAPI_CONFIG' not in os.environ:
 
 with open(os.environ.get('PYGEOAPI_CONFIG'), encoding='utf8') as fh:
     CONFIG = yaml_load(fh)
+
+
 
 STATIC_FOLDER = 'static'
 if 'templates' in CONFIG['server']:
@@ -195,7 +199,6 @@ def collection_queryables(collection_id=None):
         response.headers = headers
 
     return response
-
 
 @BLUEPRINT.route('/collections/<collection_id>/items')
 @BLUEPRINT.route('/collections/<collection_id>/items/<item_id>')
@@ -443,6 +446,22 @@ def stac_catalog_path(path):
     return response
 
 
+@BLUEPRINT.route('/user-update-map/items', methods=['GET'])
+def user_update_map(collection_id=None):
+    data = request.get_json()
+
+    collection_id = 'unesco_pois_italy'
+        
+    headers, status_code, content = api_.get_collection_items(request.headers, request.args, collection_id)
+
+    response = make_response(content, status_code)
+
+    if headers:
+        response.headers = headers
+
+    return response
+
+
 APP.register_blueprint(BLUEPRINT)
 
 
@@ -465,5 +484,6 @@ def serve(ctx, server=None, debug=False):
             port=api_.config['server']['bind']['port'])
 
 
-if __name__ == '__main__':  # run locally, for testing
-    serve()
+if __name__ == '__main__':
+    APP.run(debug = True)
+    
